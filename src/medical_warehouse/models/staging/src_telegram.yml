@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: telegram_source
+    description: "Raw data scraped from Telegram"
+    database: medical_warehouse
+    schema: raw
+    tables:
+      - name: telegram_messages

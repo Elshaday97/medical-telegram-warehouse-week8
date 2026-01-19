@@ -32,3 +32,16 @@ Thumbs.db
 
 # Logs
 logs
+src/medical_warehouse/profiles.yml
+
+# dbt artifacts
+target/
+dbt_packages/
+dbt_modules/
+logs/
+dbt_packages/
+*_packages/
+
+# dbt configuration
+profiles.yml
+.user.yml
