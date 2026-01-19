@@ -27,3 +27,8 @@ data/
 Thumbs.db
 .pytest_cache/
 
+# Telethon
+*.session
+
+# Logs
+logs
