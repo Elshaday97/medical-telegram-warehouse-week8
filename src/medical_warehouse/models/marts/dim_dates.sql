@@ -2,7 +2,7 @@ with date_series as (
     -- 1. Range of dates covering the data range
     select 
         generate_series(
-            '2023-01-01'::timestamp, 
+            '2022-01-01'::timestamp, 
             '2030-12-31'::timestamp, 
             '1 day'::interval
         )::date as date_day
