@@ -7,3 +7,5 @@ sources:
     schema: raw
     tables:
       - name: telegram_messages
+      - name: image_detections
+        description: "Raw output from YOLOv8 object detection script."
