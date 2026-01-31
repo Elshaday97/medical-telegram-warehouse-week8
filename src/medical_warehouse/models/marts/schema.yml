@@ -1,0 +1,102 @@
+version: 2
+
+models:
+  # ----------------------------------------------------
+  # Dimension: Channels
+  # ----------------------------------------------------
+  - name: dim_channels
+    description: >
+      A dimension table containing unique Telegram channels.
+      It tracks metadata like channel names, categorization, and activity summaries.
+    columns:
+      - name: channel_key
+        description: "Primary Key. A surrogate key generated using the MD5 hash of the channel name."
+        tests:
+          - unique
+          - not_null
+
+      - name: channel_name
+        description: "The unique system identifier/handle for the channel (e.g., @channel_name)."
+
+      - name: channel_title
+        description: "The display title of the Telegram channel."
+
+      - name: channel_type
+        description: "Business logic category assigned based on keywords in the title (e.g., 'Medical', 'Cosmetics')."
+
+      - name: total_posts
+        description: "Pre-calculated count of total messages scraped from this channel."
+
+  # ----------------------------------------------------
+  # Dimension: Dates
+  # ----------------------------------------------------
+  - name: dim_dates
+    description: >
+      A generated calendar dimension table. 
+      It ensures continuous date ranges for time-series analysis, filling gaps where no messages exist.
+    columns:
+      - name: date_key
+        description: "Primary Key. Integer format YYYYMMDD (e.g., 20260125) for efficient joining."
+        tests:
+          - unique
+          - not_null
+
+      - name: date_day
+        description: "The actual date value (TIMESTAMP)."
+
+      - name: year
+        description: "The 4-digit year extracted from the date."
+
+      - name: month_name
+        description: "Full name of the month (e.g., January)."
+
+      - name: day_of_week
+        description: "Numeric day of the week (0=Sunday, 6=Saturday)."
+
+      - name: is_weekend
+        description: "Boolean flag. True if the day is Saturday or Sunday, False otherwise."
+
+  # ----------------------------------------------------
+  # Fact: Messages
+  # ----------------------------------------------------
+  - name: fct_messages
+    description: >
+      The central fact table containing individual Telegram messages.
+      It is linked to dimensions via foreign keys and contains all metrics (views, forwards).
+    columns:
+      - name: message_key
+        description: "Primary Key. Unique ID generated from MD5(message_id + channel_name)."
+        tests:
+          - unique
+          - not_null
+
+      - name: channel_key
+        description: "Foreign Key linking to dim_channels."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_channels')
+              field: channel_key
+
+      - name: date_key
+        description: "Foreign Key linking to dim_dates."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_dates')
+              field: date_key
+
+      - name: message_id
+        description: "The original message ID assigned by Telegram."
+
+      - name: view_count
+        description: "The number of views the message received. Defaults to 0 if null."
+
+      - name: forward_count
+        description: "The number of times the message was forwarded."
+
+      - name: message_length
+        description: "The character count of the message text."
+
+      - name: has_media
+        description: "Boolean flag indicating if the message contains an image or video."
