@@ -39,9 +39,7 @@ def load_yolo_to_postgres():
 
     # 3. Write to Postgres (Raw Layer)
     print(f"Loading {len(df)} rows to raw.image_detections...")
-    df.to_sql(
-        "image_detections", engine, schema="raw", if_exists="replace", index=False
-    )
+    df.to_sql("image_detections", engine, schema="raw", if_exists="append", index=False)
 
     print("Success! Data loaded.")
 
